@@ -1,0 +1,16 @@
+node_modules/
+*.log
+.env
+/build
+/dist
+*.tmp
+*.dll
+*.exe
+.vscode/
+*.code-workspace
+*.lock
+yarn.lock
+package-lock.json
+yarn-error.log
+pnpm-lock.yaml
+*~

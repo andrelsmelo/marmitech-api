@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # MySQL database service
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # Node.js application service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # Use --no-cache to rebuild the image on code changes
+      args:
+        NODE_ENV: development
+      cache_from:
+        - node:latest  # Specify a base image to use as cache (optional)
+    environment:
+      MYSQL_HOST: db # Use the service name of the MySQL container as the host
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    command: bash -c "sequelize db:migrate && npm start" # Run migrations and start the application
+
+volumes:
+  mysql_data:
